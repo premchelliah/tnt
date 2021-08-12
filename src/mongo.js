@@ -24,8 +24,18 @@ export async function getUser(user) {
 
 export async function getOrderRequest(id) {
     await client.connect();
-    const collection = client.db('bigchain').collection('assets');
-    const result = await collection.find({ id }).toArray();
-    if (result.length) return { id: result[0].id, ...result[0].data };
+    const bcdb = client.db('bigchain'),
+        asset = bcdb.collection('assets'),
+        metadata = bcdb.collection('metadata'),
+        assetresult = await asset.find({ id }).toArray(),
+        metadataresult = await metadata.find({ id }).toArray();
+
+    client.close();
+    if (assetresult.length)
+        return {
+            id: assetresult[0].id,
+            ...assetresult[0].data,
+            ...metadataresult[0].metadata.orderRequest,
+        };
     return null;
 }
