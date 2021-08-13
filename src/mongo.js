@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import driver from 'bigchaindb-driver';
 
-const client = new MongoClient('mongodb://192.168.50.94:27017');
+const client = new MongoClient('mongodb://192.168.50.232:27017');
 
 export async function getUser(user) {
     await client.connect();
@@ -33,7 +33,7 @@ export async function getOrderRequest(id) {
     client.close();
     if (assetresult.length)
         return {
-            id: assetresult[0].id,
+            orderId: assetresult[0].id,
             ...assetresult[0].data,
             ...metadataresult[0].metadata.orderRequest,
         };
