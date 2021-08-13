@@ -6,6 +6,7 @@ import { putOrderRequest } from './bigchain.js';
 async function startApolloServer() {
     const typeDefs = gql`
         type OrderRequest {
+            orderId: ID
             orderNo: ID!
             orderDate: String!
             itemCode: String!
@@ -85,6 +86,18 @@ async function startApolloServer() {
     await server.start();
 
     const app = express();
+
+    // REST APIs Start
+
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
+
+    app.get('/orderRequest/:orderId', async (req, res) => {
+        res.send(await getOrderRequest(req.params.orderId));
+    });
+
+    // REST APIs End
+
     server.applyMiddleware({ app });
 
     await new Promise((resolve) => app.listen({ port: 4000 }, resolve));
